@@ -238,7 +238,7 @@ try {
             if ($IsWindowsOS) {
                 Write-Host "      `$env:PATH = `"$BinDir;`$env:PATH`""
             } else {
-                Write-Host "      export PATH=`"$BinDir:`$PATH`""
+                Write-Host "      export PATH=`"$BinDir`:`$PATH`""
             }
         }
     }
