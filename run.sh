@@ -6,7 +6,14 @@ set -uo pipefail  # (no -e, we don't want the loop to die on errors)
 # Use same defaults as install.sh
 BIN_DIR="${BIN_DIR:-$HOME/.local/bin}"
 NAME="${NAME:-midnight-miner}"
-MINER="${BIN_DIR}/${NAME}"
+
+# Prefer local binary in current directory, otherwise use BIN_DIR
+if [[ -x "./${NAME}" ]]; then
+  MINER="./${NAME}"
+  echo "[run_loop] using local binary: ${MINER}"
+else
+  MINER="${BIN_DIR}/${NAME}"
+fi
 
 # Check if binary exists
 if [[ ! -x "$MINER" ]]; then
