@@ -64,7 +64,7 @@ Write-Host "[run_loop] starting (Ctrl+C to stop)..."
 while (-not $script:shouldExit) {
     $Launches++
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    Write-Host "[run_loop] $timestamp — launch #$Launches"
+    Write-Host "[run_loop] $timestamp - launch #$Launches"
     $startTime = Get-Date
     
     # Run the miner
@@ -78,7 +78,7 @@ while (-not $script:shouldExit) {
     $endTime = Get-Date
     $duration = [int](($endTime - $startTime).TotalSeconds)
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    Write-Host "[run_loop] $timestamp — exited with code $exitCode after ${duration}s"
+    Write-Host "[run_loop] $timestamp - exited with code $exitCode after ${duration}s"
     
     # Check if we should exit
     if ($script:shouldExit) {
