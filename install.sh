@@ -40,7 +40,7 @@ EOF
       exit 0
       ;;
     *) die "unknown arg: $1 (use --help)";;
-  endac
+  esac
 done
 
 [[ -n "$SERVER_URL" ]] || die "--url is required (e.g. --url https://example.com/releases/bins)"
