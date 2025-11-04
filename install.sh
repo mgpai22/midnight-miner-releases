@@ -16,6 +16,7 @@ set -euo pipefail
 
 BIN_DIR="${BIN_DIR:-$HOME/.local/bin}"
 NAME="${NAME:-midnight-miner}"
+LOCAL_INSTALL=false
 
 die() { echo "error: $*" >&2; exit 1; }
 need() { command -v "$1" >/dev/null 2>&1 || die "missing dependency: $1"; }
@@ -24,15 +25,17 @@ SERVER_URL=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --url) SERVER_URL="${2:-}"; shift 2 ;;
+    --local) LOCAL_INSTALL=true; shift ;;
     -h|--help)
       cat <<EOF
-Usage: $0 --url <SERVER_URL>
+Usage: $0 --url <SERVER_URL> [--local]
 
 Downloads the correct archive for this machine and installs to:
-  BIN_DIR=${BIN_DIR}
+  BIN_DIR=${BIN_DIR} (or current directory if --local is used)
 
 Options:
   --url URL      Base URL hosting the release tarballs (required)
+  --local        Download to current directory instead of installing to PATH
 Env:
   BIN_DIR        Installation directory (default: ${BIN_DIR})
   NAME           Installed executable name (default: ${NAME})
@@ -47,7 +50,12 @@ done
 
 need curl
 need tar
-mkdir -p "$BIN_DIR"
+
+if [[ "$LOCAL_INSTALL" == "true" ]]; then
+  BIN_DIR="."
+else
+  mkdir -p "$BIN_DIR"
+fi
 
 uname_s=$(uname -s)
 uname_m=$(uname -m)
@@ -109,8 +117,10 @@ chmod +x "$install_path"
 
 echo "success: installed ${NAME} -> ${install_path}"
 
-# PATH hint
-case ":$PATH:" in
-  *:"$BIN_DIR":*) ;;
-  *) echo "note: ${BIN_DIR} is not in PATH. Add this to your shell rc:"; echo "      export PATH=\"$BIN_DIR:\$PATH\"";;
-esac
+# PATH hint (skip for local install)
+if [[ "$LOCAL_INSTALL" != "true" ]]; then
+  case ":$PATH:" in
+    *:"$BIN_DIR":*) ;;
+    *) echo "note: ${BIN_DIR} is not in PATH. Add this to your shell rc:"; echo "      export PATH=\"$BIN_DIR:\$PATH\"";;
+  esac
+fi
